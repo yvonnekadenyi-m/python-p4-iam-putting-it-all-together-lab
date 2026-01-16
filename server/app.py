@@ -1,8 +1,8 @@
 
 from flask import request, session
 from flask_restful import Resource
-from config import app, api
-from models import db, User, Recipe
+from server.config import app, api
+from server.models import db, User, Recipe
 
 
 class Signup(Resource):

@@ -2,16 +2,17 @@ from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 
-from config import db, bcrypt
+from server.config import db, bcrypt
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
-    _password_hash = db.Column(db.String)
+    # password_hash may be unset initially in tests/seed data, allow NULL
+    _password_hash = db.Column('password_hash', db.String, nullable=True)
     image_url = db.Column(db.String)
-    bio = db.Column(db.String)
+    bio = db.Column(db.Text)
 
     recipes = db.relationship('Recipe', back_populates='user')
 
@@ -33,7 +34,7 @@ class Recipe(db.Model, SerializerMixin):
     
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    instructions = db.Column(db.String, nullable=False)
+    instructions = db.Column(db.Text, nullable=False)
     minutes_to_complete = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
